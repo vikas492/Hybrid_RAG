@@ -8,6 +8,7 @@ from app.schemas.document import (
     DocumentResponse,
 )
 from app.vectorstores.qdrant_store import QdrantStore
+from pathlib import Path
 
 
 class DocumentService:
@@ -82,6 +83,12 @@ class DocumentService:
         self.qdrant.delete_document(
             document_id=document_id,
         )
+
+        file_path = Path(document.file_path)
+
+        if file_path.exists():
+            file_path.unlink()
+            print(f"Deleted file: {file_path}")
 
         # Delete PostgreSQL record
         self.repository.delete(
