@@ -1,11 +1,11 @@
-from app.embeddings.embedding_service import EmbeddingService
+import voyageai
 
-embedding_service = EmbeddingService()
+client = voyageai.Client(api_key="pa-EArWn_HXHPpptDXS_6LJCOJ7d8UFxRazyzJOLzaQ4rf")
 
-embedding = embedding_service.embed(
-    "Artificial Intelligence is transforming software."
+result = client.embed(
+    texts=["Hello World"],
+    model="voyage-3-lite",
+    input_type="document",
 )
 
-print(type(embedding))
-print(len(embedding))
-print(embedding[:10])
+print(len(result.embeddings[0]))

@@ -29,9 +29,15 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION: str
     EMBEDDING_DIMENSION: int
 
+    # Voyage AI
+    VOYAGE_API_KEY: str
+    EMBEDDING_MODEL: str = "voyage-3-lite"
+
+    # Redis
     REDIS_URL: str
     REDIS_TTL: int = 3600
 
+    # LLM
     LLM_PROVIDER: str = "groq"
 
     GROQ_API_KEY: str

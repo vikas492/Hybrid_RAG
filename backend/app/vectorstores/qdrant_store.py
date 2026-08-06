@@ -6,6 +6,7 @@ from qdrant_client.models import (
     Filter,
     FieldCondition,
     MatchValue,
+    PayloadSchemaType,
     PointStruct,
     VectorParams,
 )
@@ -60,6 +61,14 @@ class QdrantStore:
                     size=settings.EMBEDDING_DIMENSION,
                     distance=Distance.COSINE,
                 ),
+            )
+
+            print("Creating payload index...")
+
+            self.client.create_payload_index(
+                collection_name=self.collection,
+                field_name="document_id",
+                field_schema=PayloadSchemaType.INTEGER,
             )
 
             print("✅ Collection Created")

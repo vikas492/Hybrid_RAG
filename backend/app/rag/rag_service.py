@@ -5,7 +5,6 @@ from app.llm.prompt_builder import PromptBuilder
 from app.llm.small_talk import get_small_talk_response
 from app.models.document_chunk import DocumentChunk
 from app.retrieval.hybrid_service import HybridSearchService
-from app.retrieval.reranker import Reranker
 from app.services.chat_service import ChatService
 
 
@@ -15,9 +14,6 @@ class RAGService:
 
         print("Creating Hybrid Search...")
         self.hybrid = HybridSearchService()
-
-        print("Creating Reranker...")
-        self.reranker = Reranker()
 
         print("Creating Prompt Builder...")
         self.prompt_builder = PromptBuilder()
@@ -156,21 +152,12 @@ class RAGService:
             print(f"✓ Unique Chunks : {len(retrieved)}")
 
             # ---------------------------------------------------
-            # Cross Encoder
+            # Top Retrieved Chunks
             # ---------------------------------------------------
 
-            print("\nStep 2 : Cross Encoder")
+            print("\nStep 2 : Using Top Retrieved Chunks")
 
-            reranked = self.reranker.rerank(
-                query=question,
-                chunks=retrieved,
-                limit=10,
-            )
-
-            if reranked:
-                retrieved = reranked
-            else:
-                retrieved = retrieved[:10]
+            retrieved = retrieved[:10]
 
             # ---------------------------------------------------
             # Prompt

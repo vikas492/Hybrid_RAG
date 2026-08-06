@@ -1,44 +1,48 @@
-from sentence_transformers import SentenceTransformer
+import voyageai
+
+from app.core.settings import settings
 
 
 class EmbeddingService:
 
-    _model = None
+    _client = None
 
     def __init__(self):
 
-        if EmbeddingService._model is None:
+        if EmbeddingService._client is None:
 
-            print("Loading Embedding Model...")
+            print("Connecting to Voyage AI...")
 
-            EmbeddingService._model = SentenceTransformer(
-                "BAAI/bge-small-en-v1.5"
+            EmbeddingService._client = voyageai.Client(
+                api_key=settings.VOYAGE_API_KEY,
             )
 
-            print("✅ Embedding Model Ready")
+            print("✅ Voyage AI Ready")
 
-        self.model = EmbeddingService._model
+        self.client = EmbeddingService._client
 
     def embed(
         self,
         text: str,
     ) -> list[float]:
 
-        embedding = self.model.encode(
-            text,
-            normalize_embeddings=True,
+        result = self.client.embed(
+            texts=[text],
+            model=settings.EMBEDDING_MODEL,
+            input_type="query",
         )
 
-        return embedding.tolist()
+        return result.embeddings[0]
 
     def embed_batch(
         self,
         texts: list[str],
     ) -> list[list[float]]:
 
-        embeddings = self.model.encode(
-            texts,
-            normalize_embeddings=True,
+        result = self.client.embed(
+            texts=texts,
+            model=settings.EMBEDDING_MODEL,
+            input_type="document",
         )
 
-        return embeddings.tolist()
+        return result.embeddings
