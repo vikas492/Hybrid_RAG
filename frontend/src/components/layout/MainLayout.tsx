@@ -1,7 +1,32 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
+
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export function MainLayout() {
-  return <div className="min-h-screen bg-background text-foreground"><Navbar /><div className="mx-auto flex h-[calc(100vh-4rem)] max-w-screen-2xl"><Sidebar /><main className="min-w-0 flex-1 overflow-auto p-4 md:p-6"><Outlet /></main></div></div>;
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
+      <Navbar
+        onToggleSidebar={() =>
+          setSidebarOpen((prev) => !prev)
+        }
+      />
+
+      <div className="flex flex-1 overflow-hidden flex-col lg:flex-row">
+        <Sidebar
+          mobileOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto h-full w-full max-w-7xl px-0 py-4 sm:px-4 lg:px-8 lg:py-6">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 }

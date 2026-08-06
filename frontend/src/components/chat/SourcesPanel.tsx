@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, BookOpen } from "lucide-react";
 
 import type { Source } from "@/types/chat";
 import { CitationCard } from "@/components/chat/CitationCard";
@@ -15,50 +15,59 @@ export function SourcesPanel({
   if (sources.length === 0) return null;
 
   return (
-    <div className="mt-4 border-t border-border pt-4">
+    <section className="mt-6 overflow-hidden rounded-3xl border border-border bg-muted/20 shadow-sm">
 
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center justify-between rounded-lg px-2 py-2 transition hover:bg-muted/40"
+        className="flex w-full items-center justify-between rounded-t-3xl px-5 py-4 transition hover:bg-muted/40"
       >
-        <div className="text-sm font-semibold">
-          📚 Sources ({sources.length})
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-primary/10 p-2">
+            <BookOpen className="h-5 w-5 text-primary" />
+          </div>
+
+          <div className="text-left">
+            <h3 className="text-sm font-semibold">
+              Sources
+            </h3>
+
+            <p className="text-xs text-muted-foreground">
+              {sources.length} document reference{sources.length > 1 ? "s" : ""}
+            </p>
+          </div>
         </div>
 
         <motion.div
           animate={{
             rotate: expanded ? 180 : 0,
           }}
-          transition={{
-            duration: 0.2,
-          }}
         >
           <ChevronDown className="h-5 w-5 text-muted-foreground" />
         </motion.div>
       </button>
 
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {expanded && (
           <motion.div
             initial={{
-              height: 0,
               opacity: 0,
+              height: 0,
             }}
             animate={{
-              height: "auto",
               opacity: 1,
+              height: "auto",
             }}
             exit={{
-              height: 0,
               opacity: 0,
+              height: 0,
             }}
             transition={{
               duration: 0.25,
             }}
             className="overflow-hidden"
           >
-            <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <div className="grid gap-4 border-t border-border p-4 sm:grid-cols-1 md:grid-cols-2">
               {sources.map((source, index) => (
                 <CitationCard
                   key={`${source.chunk_id}-${index}`}
@@ -70,6 +79,6 @@ export function SourcesPanel({
         )}
       </AnimatePresence>
 
-    </div>
+    </section>
   );
 }
