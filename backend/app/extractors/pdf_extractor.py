@@ -1,20 +1,33 @@
 import fitz
 
+from app.extractors.base_extractor import BaseExtractor
 
-class PDFExtractor:
 
-    def extract_text(
+class PDFExtractor(BaseExtractor):
+    """
+    Extract text from PDF documents.
+
+    This extractor is used for text-based PDFs.
+    OCR support for scanned PDFs will be added later.
+    """
+
+    def extract(
         self,
-        pdf_path: str,
+        file_path: str,
     ) -> str:
 
-        document = fitz.open(pdf_path)
+        document = fitz.open(file_path)
 
         pages = []
 
-        for page in document:
-            pages.append(page.get_text())
+        try:
+            for page in document:
+                text = page.get_text().strip()
 
-        document.close()
+                if text:
+                    pages.append(text)
+
+        finally:
+            document.close()
 
         return "\n".join(pages)

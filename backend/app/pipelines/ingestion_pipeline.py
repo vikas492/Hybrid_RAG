@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.embeddings.embedding_service import EmbeddingService
-from app.extractors.pdf_extractor import PDFExtractor
+from app.extractors.extractor_factory import ExtractorFactory
 from app.models.document_chunk import DocumentChunk
 from app.processors.chunk_service import ChunkService
 from app.processors.text_cleaner import TextCleaner
@@ -13,8 +13,8 @@ class IngestionPipeline:
 
     def __init__(self):
 
-        print("Creating PDF Extractor...")
-        self.extractor = PDFExtractor()
+        print("Creating Extractor Factory...")
+        self.extractor = ExtractorFactory()
 
         print("Creating Text Cleaner...")
         self.cleaner = TextCleaner()
@@ -44,7 +44,7 @@ class IngestionPipeline:
         print("\n========== INGESTION STARTED ==========\n")
 
         print("Step 1 : Extracting Text...")
-        text = self.extractor.extract_text(file_path)
+        text = self.extractor.extract(file_path)
         print(f"✓ Extracted {len(text)} characters")
 
         print("\nStep 2 : Cleaning Text...")
