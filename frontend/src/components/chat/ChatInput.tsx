@@ -1,78 +1,46 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
 import { Send } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { Button } from "@/components/common/Button";
+interface ChatInputProps {
+  onSendMessage: (message: string) => void;
+  isLoading?: boolean;
+}
 
-const schema = z.object({
-  question: z
-    .string()
-    .trim()
-    .min(1, "Ask a question first."),
-});
+export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
+  const [input, setInput] = useState("");
 
-type FormValues = z.infer<typeof schema>;
-
-export function ChatInput({
-  disabled,
-  onSend,
-}: {
-  disabled?: boolean;
-  onSend: (question: string) => void;
-}) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState,
-  } = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      question: "",
-    },
-  });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    onSendMessage(input);
+    setInput("");
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit(({ question }) => {
-        onSend(question);
-        reset();
-      })}
-      className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:p-5"
-    >
-      <input
-        {...register("question")}
-        disabled={disabled}
-        placeholder="Ask anything about your documents..."
-        className="
-          min-h-[52px]
-          flex-1
-          rounded-2xl
-          border
-          border-border
-          bg-card
-          px-5
-          text-base
-          shadow-sm
-          outline-none
-          transition-all
-          placeholder:text-muted-foreground
-          focus:border-primary
-          focus:ring-2
-          focus:ring-primary/20
-          disabled:cursor-not-allowed
-          disabled:opacity-50
-        "
-      />
-
-      <Button
-        type="submit"
-        disabled={disabled || formState.isSubmitting}
-        className="h-[56px] w-[56px] rounded-3xl p-0 shadow-md"
+    <div className="sticky bottom-0 left-0 right-0 bg-background/95 p-3 sm:p-4 border-t border-border backdrop-blur-md">
+      <form
+        onSubmit={handleSubmit}
+        className="flex items-center gap-2 max-w-4xl mx-auto w-full"
       >
-        <Send className="h-5 w-5" />
-      </Button>
-    </form>
+        <div className="relative flex-1">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask across your uploaded documents..."
+            className="w-full h-12 pl-4 pr-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm sm:text-base shadow-sm"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={!input.trim() || isLoading}
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Send Message"
+        >
+          <Send className="h-5 w-5" />
+        </button>
+      </form>
+    </div>
   );
 }

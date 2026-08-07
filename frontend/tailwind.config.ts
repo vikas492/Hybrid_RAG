@@ -10,7 +10,10 @@ export default {
         border: "hsl(var(--border))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: "hsl(var(--primary))",
+        primary: {
+          DEFAULT: "#00a86b",
+          foreground: "#ffffff",
+        },
         "primary-foreground": "hsl(var(--primary-foreground))",
         muted: "hsl(var(--muted))",
         "muted-foreground": "hsl(var(--muted-foreground))",

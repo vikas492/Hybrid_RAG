@@ -15,85 +15,61 @@ interface NavbarProps {
 }
 
 export function Navbar({ onToggleSidebar }: NavbarProps) {
-  const linkClass = ({
-    isActive,
-  }: {
-    isActive: boolean;
-  }) =>
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
-      "inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-base font-medium transition duration-200",
+      "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition duration-200",
       "text-muted-foreground hover:bg-muted hover:text-foreground",
       isActive &&
-        "bg-primary text-primary-foreground shadow-soft hover:bg-primary"
+        "bg-primary/10 text-primary hover:bg-primary/15 font-semibold"
     );
 
   return (
-    <header className="sticky top-0 z-50 h-200 border-b border-border bg-background/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-5 lg:px-8">
-
-        <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-3 sm:px-5 lg:px-8">
+        
+        {/* Left Side: Mobile Hamburger Menu & App Branding */}
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onToggleSidebar}
             aria-label="Open Sidebar"
-            aria-expanded="false"
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border bg-card text-muted-foreground shadow-sm transition hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/30 lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-foreground shadow-xs transition hover:bg-muted focus:outline-none lg:hidden"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4" />
           </button>
 
           <NavLink
             to={ROUTES.dashboard}
-            className="flex items-center gap-3"
+            className="flex items-center gap-2"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
-              <DatabaseZap className="h-5 w-5 text-primary" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <DatabaseZap className="h-4 w-4 text-primary" />
             </div>
 
-            <div className="flex flex-col">
-              <span className="text-base font-semibold tracking-tight sm:text-lg">
-                Hybrid RAG
-              </span>
-              <span className="hidden text-[11px] text-muted-foreground sm:block">
-                AI Knowledge Assistant
-              </span>
-            </div>
+            <span className="text-sm font-semibold tracking-tight">
+              Hybrid RAG
+            </span>
           </NavLink>
         </div>
 
-        <div className="flex items-center gap-2">
-          <NavLink
-            to={ROUTES.dashboard}
-            className={linkClass}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            Dashboard
+        {/* Right Side: Navigation Buttons */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <NavLink to={ROUTES.dashboard} className={linkClass}>
+            <LayoutDashboard className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden xs:inline sm:inline">Dashboard</span>
           </NavLink>
 
-          <NavLink
-            to={ROUTES.chat}
-            className={linkClass}
-            onClick={() => {
-              if (
-                typeof window !== "undefined" &&
-                window.innerWidth < 1024
-              ) {
-                onToggleSidebar();
-              }
-            }}
-          >
-            <MessageSquare className="h-4 w-4" />
-            Chat
+          <NavLink to={ROUTES.chat} className={linkClass}>
+            <MessageSquare className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden xs:inline sm:inline">Chat</span>
           </NavLink>
 
-          <NavLink
-            to={ROUTES.upload}
-            className={linkClass}
-          >
-            <Upload className="h-4 w-4" />
-            Upload
+          <NavLink to={ROUTES.upload} className={linkClass}>
+            <Upload className="h-3.5 w-3.5 shrink-0" />
+            <span className="hidden xs:inline sm:inline">Upload</span>
           </NavLink>
         </div>
+
       </div>
     </header>
   );

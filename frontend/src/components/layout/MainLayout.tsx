@@ -9,20 +9,16 @@ export function MainLayout() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
-      <Navbar
-        onToggleSidebar={() =>
-          setSidebarOpen((prev) => !prev)
-        }
-      />
+      <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
 
-      <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar
           mobileOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
 
         <main className="flex-1 min-w-0 overflow-y-auto">
-          <div className="mx-auto h-full w-full max-w-7xl px-4 py-4 sm:px-5 lg:px-8 lg:py-6">
+          <div className="mx-auto h-full w-full max-w-6xl px-3 py-3 sm:px-5 sm:py-4">
             <Outlet />
           </div>
         </main>
