@@ -5,6 +5,7 @@ import { ChatMessage } from "@/components/chat/ChatMessage";
 import { TypingIndicator } from "@/components/chat/TypingIndicator";
 import { EmptyState } from "@/components/common/EmptyState";
 import { useChat } from "@/hooks/useChat";
+import { useCreateSession } from "@/hooks/useSessions"; // Import your mutation hook
 
 export function ChatWindow({
   sessionId,
@@ -13,10 +14,23 @@ export function ChatWindow({
 }) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const { messages, sendMessage, isSending } = useChat(sessionId);
+  const createSessionMutation = useCreateSession();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length, isSending]);
+
+  const handleSend = async (message: string) => {
+    if (!sessionId) {
+      createSessionMutation.mutate(undefined, {
+        onSuccess: () => {
+          sendMessage(message);
+        },
+      });
+      return;
+    }
+    sendMessage(message);
+  };
 
   return (
     <section className="flex h-full w-full flex-col min-h-0 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3 sm:p-5 shadow-sm">
@@ -38,12 +52,12 @@ export function ChatWindow({
               title={
                 sessionId
                   ? "Start the conversation"
-                  : "Create a chat session"
+                  : "Create or select a chat session"
               }
               description={
                 sessionId
                   ? "Ask questions about your uploaded documents."
-                  : "Create a new chat to begin."
+                  : "Type a message below to start a new chat."
               }
             />
           ) : (
@@ -61,8 +75,8 @@ export function ChatWindow({
       <div className="mt-2 pt-2 border-t border-slate-200/80 shrink-0">
         <div className="mx-auto w-full max-w-4xl">
           <ChatInput
-            disabled={!sessionId || isSending}
-            onSend={sendMessage}
+            disabled={isSending || createSessionMutation.isPending}
+            onSend={handleSend}
           />
         </div>
       </div>

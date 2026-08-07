@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { sessionService } from "@/services/session.service";
@@ -28,7 +29,22 @@ function toChatMessages(session: ChatSession): ChatMessage[] {
 }
 
 export function useSessions() {
-  return useQuery({ queryKey: sessionsKey, queryFn: sessionService.list });
+  const activeSessionId = useSessionStore((state) => state.activeSessionId);
+  const setActiveSessionId = useSessionStore((state) => state.setActiveSessionId);
+
+  const query = useQuery({ 
+    queryKey: sessionsKey, 
+    queryFn: sessionService.list 
+  });
+
+  // Automatically select the first session if activeSessionId is null
+  useEffect(() => {
+    if (query.data && query.data.length > 0 && activeSessionId === null) {
+      setActiveSessionId(query.data[0].id);
+    }
+  }, [query.data, activeSessionId, setActiveSessionId]);
+
+  return query;
 }
 
 export function useCreateSession() {
