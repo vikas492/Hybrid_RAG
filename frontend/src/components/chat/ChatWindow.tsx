@@ -5,7 +5,7 @@ import { ChatMessage } from "@/components/chat/ChatMessage";
 import { TypingIndicator } from "@/components/chat/TypingIndicator";
 import { EmptyState } from "@/components/common/EmptyState";
 import { useChat } from "@/hooks/useChat";
-import { useCreateSession } from "@/hooks/useSessions"; // Import your mutation hook
+import { useCreateSession } from "@/hooks/useSessions";
 
 export function ChatWindow({
   sessionId,
@@ -33,8 +33,8 @@ export function ChatWindow({
   };
 
   return (
-    <section className="flex h-full w-full flex-col min-h-0 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3 sm:p-5 shadow-sm">
-      {/* Header Inside Chat Window */}
+    <section className="flex flex-col h-full w-full rounded-none sm:rounded-2xl border-0 sm:border border-slate-200/80 bg-slate-50/70 p-3 sm:p-5 shadow-none sm:shadow-sm overflow-hidden">
+      {/* Header */}
       <div className="mb-2 sm:mb-4 px-1 space-y-0.5 shrink-0">
         <h2 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">
           Ask Your Knowledge Base
@@ -44,7 +44,7 @@ export function ChatWindow({
         </p>
       </div>
 
-      {/* Scrollable Messages Container */}
+      {/* Messages */}
       <div className="flex-1 min-h-0 overflow-y-auto pr-1">
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 py-2">
           {messages.length === 0 ? (
@@ -71,8 +71,8 @@ export function ChatWindow({
         </div>
       </div>
 
-      {/* Fixed Bottom Input Bar */}
-      <div className="mt-2 pt-2 border-t border-slate-200/80 shrink-0">
+      {/* Input pinned directly at the bottom */}
+      <div className="mt-auto pt-2 shrink-0 pb-1 sm:pb-0">
         <div className="mx-auto w-full max-w-4xl">
           <ChatInput
             disabled={isSending || createSessionMutation.isPending}
