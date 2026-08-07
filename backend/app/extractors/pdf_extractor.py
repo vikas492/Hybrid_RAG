@@ -1,15 +1,19 @@
 import fitz
 
 from app.extractors.base_extractor import BaseExtractor
+from app.extractors.ocr_service import OCRService
 
 
 class PDFExtractor(BaseExtractor):
     """
     Extract text from PDF documents.
 
-    This extractor is used for text-based PDFs.
-    OCR support for scanned PDFs will be added later.
+    1. Try extracting selectable text using PyMuPDF.
+    2. If the PDF contains little or no text, fall back to OCR.
     """
+
+    def __init__(self):
+        self.ocr = OCRService()
 
     def extract(
         self,
@@ -21,7 +25,9 @@ class PDFExtractor(BaseExtractor):
         pages = []
 
         try:
+
             for page in document:
+
                 text = page.get_text().strip()
 
                 if text:
@@ -30,4 +36,20 @@ class PDFExtractor(BaseExtractor):
         finally:
             document.close()
 
-        return "\n".join(pages)
+        extracted_text = "\n".join(pages).strip()
+
+        # If very little text was extracted,
+        # assume it's a scanned PDF.
+        if len(extracted_text) < 100:
+
+            print("⚠️ Scanned PDF detected. Trying OCR...")
+
+            try:
+                extracted_text = self.ocr.extract(file_path)
+                print("✅ OCR completed successfully.")
+
+            except Exception as error:
+                print(f"⚠️ OCR unavailable: {error}")
+                print("Continuing with extracted PDF text.")
+
+        return extracted_text

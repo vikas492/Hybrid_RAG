@@ -23,7 +23,7 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in value.split(",")]
         return value
 
-    # Qdrant Cloud
+    # Qdrant
     QDRANT_URL: str
     QDRANT_API_KEY: str
     QDRANT_COLLECTION: str
@@ -42,6 +42,9 @@ class Settings(BaseSettings):
 
     GROQ_API_KEY: str
     GROQ_MODEL: str = "llama-3.3-70b-versatile"
+
+    # OCR
+    TESSERACT_CMD: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",
