@@ -1,18 +1,31 @@
 import React, { useState } from "react";
 import { Send } from "lucide-react";
 
-interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+export interface ChatInputProps {
+  onSend?: (message: string) => void;
+  onSendMessage?: (message: string) => void;
+  disabled?: boolean;
   isLoading?: boolean;
 }
 
-export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  onSendMessage,
+  disabled,
+  isLoading,
+}: ChatInputProps) {
   const [input, setInput] = useState("");
+
+  const isDisabled = Boolean(disabled || isLoading);
+  const handleSend = onSend || onSendMessage;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
-    onSendMessage(input);
+    if (!input.trim() || isDisabled) return;
+
+    if (handleSend) {
+      handleSend(input);
+    }
     setInput("");
   };
 
@@ -27,18 +40,19 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={isDisabled}
             placeholder="Ask across your uploaded documents..."
-            className="w-full h-12 pl-4 pr-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm sm:text-base shadow-sm"
+            className="w-full h-11 sm:h-12 pl-4 pr-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-xs sm:text-sm shadow-xs disabled:opacity-50"
           />
         </div>
 
         <button
           type="submit"
-          disabled={!input.trim() || isLoading}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={!input.trim() || isDisabled}
+          className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Send Message"
         >
-          <Send className="h-5 w-5" />
+          <Send className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       </form>
     </div>
