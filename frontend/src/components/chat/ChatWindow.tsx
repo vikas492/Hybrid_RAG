@@ -12,28 +12,27 @@ export function ChatWindow({
   sessionId: number | null;
 }) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
-
-  const {
-    messages,
-    sendMessage,
-    isSending,
-  } = useChat(sessionId);
+  const { messages, sendMessage, isSending } = useChat(sessionId);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length, isSending]);
 
   return (
-    <section className="flex h-full min-h-0 flex-col rounded-3xl border border-border bg-background shadow-xl">
+    <section className="flex h-full w-full flex-col min-h-0 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3 sm:p-5 shadow-sm">
+      {/* Header Inside Chat Window */}
+      <div className="mb-2 sm:mb-4 px-1 space-y-0.5 shrink-0">
+        <h2 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground">
+          Ask Your Knowledge Base
+        </h2>
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          Answers are generated from your uploaded PDFs with source passage attached.
+        </p>
+      </div>
 
-      {/* Messages */}
-
-      <div className="flex-1 overflow-y-auto">
-
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-3 py-5 sm:px-5 lg:px-8">
-
+      {/* Scrollable Messages Container */}
+      <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 py-2">
           {messages.length === 0 ? (
             <EmptyState
               title={
@@ -49,32 +48,24 @@ export function ChatWindow({
             />
           ) : (
             messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-              />
+              <ChatMessage key={message.id} message={message} />
             ))
           )}
 
           {isSending && <TypingIndicator />}
-
           <div ref={bottomRef} />
-
         </div>
-
       </div>
 
-      {/* Input */}
-
-      <div className="border-t border-border bg-background/95 backdrop-blur-sm">
-        <div className="mx-auto w-full max-w-5xl px-3 sm:px-5">
+      {/* Fixed Bottom Input Bar */}
+      <div className="mt-2 pt-2 border-t border-slate-200/80 shrink-0">
+        <div className="mx-auto w-full max-w-4xl">
           <ChatInput
             disabled={!sessionId || isSending}
             onSend={sendMessage}
           />
         </div>
       </div>
-
     </section>
   );
 }
